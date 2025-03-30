@@ -3,21 +3,32 @@ import os
 import requests
 
 class VideoProcessor:
-    def __init__(self, output_folder="frames"):
+    def __init__(self, output_folder="frames", video_path="video.mp4"):
         self.output_folder = output_folder
+        self.video_path = video_path
+        self._clear_storage()
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
     
-    def download_video(self, url, output_path="video.mp4"):
+    def _clear_storage(self):
+        if os.path.exists(self.video_path):
+            os.remove(self.video_path)
+        if os.path.exists(self.output_folder):
+            for file in os.listdir(self.output_folder):
+                file_path = os.path.join(self.output_folder, file)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+    
+    def download_video(self, url):
         response = requests.get(url, stream=True)
-        with open(output_path, "wb") as f:
+        with open(self.video_path, "wb") as f:
             for chunk in response.iter_content(chunk_size=1024):
                 if chunk:
                     f.write(chunk)
-        return output_path
+        return self.video_path
     
-    def extract_frames(self, video_path, interval=5):
-        cap = cv2.VideoCapture(video_path)
+    def extract_frames(self, interval=5):
+        cap = cv2.VideoCapture(self.video_path)
         fps = int(cap.get(cv2.CAP_PROP_FPS))
         frame_interval = fps * interval
         frame_count = 0
