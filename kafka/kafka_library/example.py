@@ -1,21 +1,32 @@
 import random
+import math
 import time
 from producer import KafkaImageProducer
 
 image_urls = [
-    "https://res.cloudinary.com/dvrisaqgy/image/upload/v1742967678/uploads/1742967677245.png",
-    "https://res.cloudinary.com/dvrisaqgy/image/upload/v1742967680/uploads/1742967680234.jpg",
-    "https://res.cloudinary.com/dvrisaqgy/image/upload/v1742967683/uploads/1742967683578.jpeg"
+    "https://baogiaothong.mediacdn.vn/files/news/2018/11/26/110331-46983782_1134274046740095_1180441090944139264_n.jpg",
+    "https://baogiaothong.mediacdn.vn/files/news/2018/11/26/110331-46983782_1134274046740095_1180441090944139264_n.jpg",
+    "https://baogiaothong.mediacdn.vn/files/news/2018/11/26/110331-46983782_1134274046740095_1180441090944139264_n.jpg"
 ]
 
 # Tọa độ cơ sở riêng cho từng loại báo cáo
 traffic_base_coords = (108.21797196886965, 16.063749108468627)  # Kẹt xe
 flood_base_coords = (108.20531565208454, 16.072981703606757)  # Lũ lụt
 
-def generate_nearby_coordinates(base_lon, base_lat, delta=0.001):
-    """Sinh tọa độ ngẫu nhiên xung quanh một điểm"""
-    new_lon = base_lon + random.uniform(-delta, delta)
-    new_lat = base_lat + random.uniform(-delta, delta)
+def generate_nearby_coordinates(base_lon, base_lat, delta=0.01):
+    """
+    Sinh tọa độ ngẫu nhiên trong vòng tròn bán kính 'delta' quanh điểm (base_lon, base_lat)
+    """
+    # Random khoảng cách và góc
+    distance = random.uniform(0, delta)
+    angle = random.uniform(0, 2 * math.pi)
+
+    # Đổi sang toạ độ Cartesian
+    dlon = distance * math.cos(angle)
+    dlat = distance * math.sin(angle)
+
+    new_lon = base_lon + dlon
+    new_lat = base_lat + dlat
     return round(new_lon, 6), round(new_lat, 6)
 
 producer = KafkaImageProducer(topic="python-topic", group_id="traffic_group")
