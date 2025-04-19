@@ -10,7 +10,6 @@ class KafkaImageProducer:
         self.topic = topic
 
     def send_traffic_report(self, img_url, longitude, latitude):
-        """Gửi báo cáo kẹt xe"""
         data = {
             "type": "user report",
             "reportId": "67e39380aa898a66445a9135",

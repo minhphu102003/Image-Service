@@ -14,10 +14,6 @@ traffic_base_coords = (108.21797196886965, 16.063749108468627)  # Kẹt xe
 flood_base_coords = (108.20531565208454, 16.072981703606757)  # Lũ lụt
 
 def generate_nearby_coordinates(base_lon, base_lat, delta=0.01):
-    """
-    Sinh tọa độ ngẫu nhiên trong vòng tròn bán kính 'delta' quanh điểm (base_lon, base_lat)
-    """
-    # Random khoảng cách và góc
     distance = random.uniform(0, delta)
     angle = random.uniform(0, 2 * math.pi)
 
